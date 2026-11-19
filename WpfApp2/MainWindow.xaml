@@ -1,0 +1,189 @@
+﻿<Window x:Class="WpfApp2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Учёт ТМЦ" Height="660" Width="1060" WindowStartupLocation="CenterScreen">
+    <TabControl x:Name="Tabs" Margin="8" SelectionChanged="Tabs_Changed">
+
+        <TabItem Header="Приход">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Категория" FontWeight="Bold"/>
+                    <ComboBox x:Name="CbInCategory" Margin="0,4,0,8" SelectionChanged="CbInCategory_Changed"/>
+                    <TextBlock Text="Товар" FontWeight="Bold"/>
+                    <ComboBox x:Name="CbInItem" Margin="0,4,0,8"/>
+                    <TextBlock Text="Количество"/>
+                    <TextBox x:Name="TbInQty"/>
+                    <TextBlock Text="Цена за единицу (необязательно)" Margin="0,8,0,0"/>
+                    <TextBox x:Name="TbInPrice"/>
+                    <TextBlock Text="Комментарий" Margin="0,8,0,0"/>
+                    <TextBox x:Name="TbInComment"/>
+                    <Button x:Name="BtnInAdd" Content="Оприходовать" Margin="0,10,0,0" Padding="0,6" Click="BtnInAdd_Click"/>
+                    <Separator Margin="0,14"/>
+                    <TextBlock Text="Новый товар (в выбранной категории)" FontWeight="Bold"/>
+                    <TextBox x:Name="TbNewName" Margin="0,4,0,4"/>
+                    <TextBlock Text="Единица измерения" FontSize="11" Foreground="Gray"/>
+                    <TextBox x:Name="TbNewUnit" Text="шт" Margin="0,2,0,4"/>
+                    <Button x:Name="BtnNewItem" Content="Добавить товар" Click="BtnNewItem_Click"/>
+                    <StackPanel x:Name="PnlNewCat" Visibility="Collapsed">
+                        <TextBlock Text="Новая категория" FontWeight="Bold" Margin="0,12,0,0"/>
+                        <TextBox x:Name="TbNewCat" Margin="0,4,0,4"/>
+                        <Button x:Name="BtnNewCat" Content="Добавить категорию" Click="BtnNewCat_Click"/>
+                    </StackPanel>
+                </StackPanel>
+                <DockPanel Grid.Column="1" Margin="12,0,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="Последние поступления" FontWeight="Bold" Margin="0,0,0,6"/>
+                    <DataGrid x:Name="DgInHistory" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Дата}" Width="130"/>
+                            <DataGridTextColumn Header="Товар" Binding="{Binding Товар}" Width="*"/>
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Количество}" Width="90"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Цена}" Width="90"/>
+                            <DataGridTextColumn Header="Комментарий" Binding="{Binding Комментарий}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Расход (выдача)">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Номер заказа" FontWeight="Bold"/>
+                    <TextBox x:Name="TbOrderNum" Margin="0,4,0,8"/>
+                    <TextBlock Text="Кому выдаётся (ФИО)" FontWeight="Bold"/>
+                    <TextBox x:Name="TbOutPerson" Margin="0,4,0,8"/>
+                    <TextBlock Text="Категория (только доступные вам)"/>
+                    <ComboBox x:Name="CbOutCategory" Margin="0,4,0,8" SelectionChanged="CbOutCategory_Changed"/>
+                    <TextBlock Text="Товар"/>
+                    <ComboBox x:Name="CbOutItem" Margin="0,4,0,8"/>
+                    <TextBlock Text="Количество"/>
+                    <TextBox x:Name="TbOutQty"/>
+                    <TextBlock Text="Комментарий" Margin="0,8,0,0"/>
+                    <TextBox x:Name="TbOutComment"/>
+                    <Button x:Name="BtnOutAdd" Content="Выдать и сформировать акт" Margin="0,10,0,0" Padding="0,6" Click="BtnOutAdd_Click"/>
+                </StackPanel>
+                <DockPanel Grid.Column="1" Margin="12,0,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="Последние выдачи" FontWeight="Bold" Margin="0,0,0,6"/>
+                    <DataGrid x:Name="DgOutHistory" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Дата}" Width="130"/>
+                            <DataGridTextColumn Header="Заказ" Binding="{Binding Заказ}" Width="100"/>
+                            <DataGridTextColumn Header="Товар" Binding="{Binding Товар}" Width="*"/>
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Количество}" Width="90"/>
+                            <DataGridTextColumn Header="Получатель" Binding="{Binding Получатель}" Width="160"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Склад (остатки)">
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Text="Поиск: " VerticalAlignment="Center"/>
+                    <TextBox x:Name="TbSearch" Width="250" TextChanged="TbSearch_Changed"/>
+                    <Button x:Name="BtnBalRefresh" Content="Обновить" Margin="8,0,0,0" Padding="10,3" Click="BtnBalRefresh_Click"/>
+                    <Button x:Name="BtnCsv" Content="Экспорт в CSV" Margin="8,0,0,0" Padding="10,3" Click="BtnCsv_Click"/>
+                </StackPanel>
+                <DataGrid x:Name="DgBalances" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,8,0,0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Товар" Binding="{Binding Товар}" Width="*"/>
+                        <DataGridTextColumn Header="Категория" Binding="{Binding Категория}" Width="160"/>
+                        <DataGridTextColumn Header="Единица" Binding="{Binding Единица}" Width="90"/>
+                        <DataGridTextColumn Header="Остаток" Binding="{Binding Остаток}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+        <TabItem Header="Акты выдачи">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Button DockPanel.Dock="Bottom" x:Name="BtnActSave" Content="Сохранить акт в файл" Click="BtnActSave_Click"/>
+                    <ListBox x:Name="LbOrders" SelectionChanged="LbOrders_Changed"/>
+                </DockPanel>
+                <TextBox Grid.Column="1" x:Name="TbAct" IsReadOnly="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" FontFamily="Consolas" Margin="10,0,0,0"/>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Отчёт по движениям">
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Text="С" VerticalAlignment="Center"/>
+                    <DatePicker x:Name="DpFrom" Width="130" Margin="4,0,0,0"/>
+                    <TextBlock Text="по" VerticalAlignment="Center" Margin="10,0,4,0"/>
+                    <DatePicker x:Name="DpTo" Width="130"/>
+                    <ComboBox x:Name="CbMoveType" Width="110" Margin="10,0,0,0" SelectedIndex="0">
+                        <ComboBoxItem Content="Все"/>
+                        <ComboBoxItem Content="Приход"/>
+                        <ComboBoxItem Content="Расход"/>
+                    </ComboBox>
+                    <Button x:Name="BtnRepRefresh" Content="Обновить" Margin="10,0,0,0" Padding="10,3" Click="BtnRepRefresh_Click"/>
+                </StackPanel>
+                <DataGrid x:Name="DgReport" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,8,0,0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding Дата}" Width="130"/>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding Тип}" Width="80"/>
+                        <DataGridTextColumn Header="Товар" Binding="{Binding Товар}" Width="*"/>
+                        <DataGridTextColumn Header="Кол-во" Binding="{Binding Количество}" Width="70"/>
+                        <DataGridTextColumn Header="Цена" Binding="{Binding Цена}" Width="80"/>
+                        <DataGridTextColumn Header="Заказ" Binding="{Binding Заказ}" Width="90"/>
+                        <DataGridTextColumn Header="Получатель" Binding="{Binding Получатель}" Width="140"/>
+                        <DataGridTextColumn Header="Комментарий" Binding="{Binding Комментарий}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+        <TabItem x:Name="TabUsers" Header="Пользователи" Visibility="Collapsed">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Button DockPanel.Dock="Bottom" x:Name="BtnUserDelete" Content="Удалить пользователя" Click="BtnUserDelete_Click"/>
+                    <ListBox x:Name="LbUsers" SelectionChanged="LbUsers_Changed"/>
+                </DockPanel>
+                <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                    <TextBlock Text="Логин"/>
+                    <TextBox x:Name="TbULogin" Margin="0,4,0,8"/>
+                    <TextBlock Text="ФИО"/>
+                    <TextBox x:Name="TbUName" Margin="0,4,0,8"/>
+                    <TextBlock Text="Пароль (пусто — не менять)"/>
+                    <PasswordBox x:Name="PbUPass" Margin="0,4,0,8"/>
+                    <CheckBox x:Name="ChkUAdmin" Content="Администратор (полный доступ)"/>
+                    <Button x:Name="BtnUserSave" Content="Сохранить пользователя" Margin="0,10,0,0" Padding="0,5" Click="BtnUserSave_Click"/>
+                    <Button x:Name="BtnUserAdd" Content="Добавить нового пользователя" Margin="0,6,0,0" Click="BtnUserAdd_Click"/>
+                    <TextBlock Text="Доступные категории выдачи" FontWeight="Bold" Margin="0,14,0,4"/>
+                    <StackPanel x:Name="SpUserCats"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem x:Name="TabBackup" Header="Резервные копии" Visibility="Collapsed">
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Button x:Name="BtnBackupRestore" Content="Восстановить выбранную копию" Click="BtnBackupRestore_Click"/>
+                    <TextBlock x:Name="TbDbPath" FontSize="11" Foreground="Gray" Margin="0,8,0,0"/>
+                </StackPanel>
+                <Button DockPanel.Dock="Top" x:Name="BtnBackupCreate" Content="Создать копию сейчас" Click="BtnBackupCreate_Click"/>
+                <ListBox x:Name="LbBackups" Margin="0,8,0,8"/>
+            </DockPanel>
+        </TabItem>
+
+    </TabControl>
+</Window>
